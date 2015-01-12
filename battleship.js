@@ -12,17 +12,7 @@ var model = {
         
         /* figure out how to do this 
          * one method is the fisher yate shuffle 
-        generateShipLocations()
-        generateShip() 
-        collision()    
     
-    
-        var testArray = [1,2,3,4,5];
-        Shuffle(testArray);
-
-        // jQuery to dump out new 
-        //generateShipLocations(ship) {}; 
-	//generateShip(){};
         ships: [
 		{ locations: [0, 0, 0], hits: ["", "", ""] },
 		{ locations: [0, 0, 0], hits: ["", "", ""] },
@@ -79,6 +69,10 @@ var model = {
          */
 	generateShipLocations: function() {
 		// Create ships here.
+                var locations;
+                for (var i = 0; i < this.numShips; i++){
+                    while()
+                }}
                 
 		console.log("Ships array: ");
 		console.log(this.ships);
