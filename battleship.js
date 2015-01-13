@@ -10,23 +10,19 @@ var model = {
 	shipsSunk: 0,
 	
         
-        /* figure out how to do this 
-         * one method is the fisher yate shuffle 
-    
-        ships: [
-		{ locations: [0, 0, 0], hits: ["", "", ""] },
-		{ locations: [0, 0, 0], hits: ["", "", ""] },
-		{ locations: [0, 0, 0], hits: ["", "", ""] }
-	],
-    
-*/
-// original hard-coded values for ship locations
         
-	ships: [
-		{ locations: ["06", "16", "26"], hits: ["", "", ""] },
-		{ locations: ["24", "34", "44"], hits: ["", "", ""] },
-		{ locations: ["10", "11", "12"], hits: ["", "", ""] }
-	],
+         
+    var ships= {
+    
+        shipLength: "3",
+        numShips: "3",
+        shipLocations: [
+                        { locations: [0, 0, 0], hits: ["", "", ""] },
+                        { locations: [0, 0, 0], hits: ["", "", ""] },
+                        { locations: [0, 0, 0], hits: ["", "", ""] }
+                       ],
+    
+
 
 	fire: function(guess) {
 		for (var i = 0; i < this.numShips; i++) {
@@ -68,14 +64,15 @@ var model = {
          * Loads the ship locations into the "objects" in 'ships'
          */
 	generateShipLocations: function() {
-		// Create ships here.
-                var locations;
-                for (var i = 0; i < this.numShips; i++){
-                    while()
-                }}
-                
+		var locations;
+		for (var i = 0; i < this.numShips; i++) {
+			do {
+				locations = this.generateShip();
+			} while (this.collision(locations));
+			this.shipLocations[i].locations = locations;
+		}
 		console.log("Ships array: ");
-		console.log(this.ships);
+		console.log(this.shipLocations);
 	},
         /*
          * Returns an array of ship locations.  The array should be the length
@@ -84,19 +81,45 @@ var model = {
          * Ex. [14, 24, 34] for a ship of length 3
          */
 	generateShip: function() {
-               // Choose whether the ship is vertical or horizontal
-               // Also an example of using Math.random
 		var direction = Math.floor(Math.random() * 2);
-		
+		var row, col;
+
+		if (direction === 1) { // horizontal
+			row = Math.floor(Math.random() * this.boardSize);
+			col = Math.floor(Math.random() * (this.boardSize - this.shipLength + 1));
+		} else { // vertical
+			row = Math.floor(Math.random() * (this.boardSize - this.shipLength + 1));
+			col = Math.floor(Math.random() * this.boardSize);
+		}
+
+		var newShipLocations = [];
+		for (var i = 0; i < this.shipLength; i++) {
+			if (direction === 1) {
+				newShipLocations.push(row + "" + (col + i));
+			} else {
+				newShipLocations.push((row + i) + "" + col);
+			}
+		}
+		return newShipLocations;
 	},
+
 
 /*
  * Returns true if there is a collision between the ships, false otherwise
  * Accepts the array 'location' of a ship, and checks the existing ships in "ships"
  * for collisions.
  */
-	collision: function(locations) {
-		
+
+    collision: function(locations) {
+		for (var i = 0; i < this.numShips; i++) {
+			var ship = this.ships[i];
+			for (var j = 0; j < locations.length; j++) {
+				if (ship.locations.indexOf(locations[j]) >= 0) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 	
 }; 

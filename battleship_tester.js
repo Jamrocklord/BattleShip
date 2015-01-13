@@ -193,7 +193,7 @@ var controller = {
 			}
 		}
 	}
-}
+};
 
 
 // You should see three ships on the board, one miss, and the message
