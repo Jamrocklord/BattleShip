@@ -4,11 +4,11 @@ var Ships = {
 	numShips: "3",
 	shipLength: "3",
 	shipsSunk: "0",
-	
+	boardSize: "7",
 	ships: [
-		{ locations: ["0", "0", "0"], hits: ["", "", ""] },
-		{ locations: ["0", "0", "0"], hits: ["", "", ""] },
-		{ locations: ["0", "0", "0"], hits: ["", "", ""] }
+		{ locations: [0, 0, 0], hits: ["", "", ""] },
+		{ locations: [0, 0, 0], hits: ["", "", ""] },
+		{ locations: [0, 0, 0], hits: ["", "", ""] }
 	],
 
 	fire: function(guess) {
@@ -18,18 +18,18 @@ var Ships = {
 
 			if (index >= 0) {
 				ship.hits[index] = "hit";
-				view.displayHit(guess);
-				view.displayMessage("HIT!");
+				GameBoard.view.displayHit(guess);
+				GameBoard.view.displayMessage("HIT!");
 
 				if (this.isSunk(ship)) {
-					view.displayMessage("You sank my battleship!");
+                                            GameBoard.view.displayMessage("You sank my battleship!");
 					this.shipsSunk++;
 				}
 				return true;
 			}
 		}
-		view.displayMiss(guess);
-		view.displayMessage("You missed.");
+		GameBoard.view.displayMiss(guess);
+                GameBoard.view.displayMessage("You missed.");
 		return false;
 	},
 
@@ -73,7 +73,7 @@ var Ships = {
 			} else {
 				newShipLocations.push((row + i) + "" + col);
 			}
-		}
+		}console.log(newShipLocations);//For testing to see if the ships are being made
 		return newShipLocations;
 	},
 
@@ -91,8 +91,9 @@ var Ships = {
 	
 }; 
 
+
 var GameBoard = {
-    boardSize: "7",
+    
    
     boardController:function parseGuess(guess) {
 	var alphabet = ["A", "B", "C", "D", "E", "F", "G"];
@@ -105,8 +106,8 @@ var GameBoard = {
 		
 		if (isNaN(row) || isNaN(column)) {
 			alert("Oops, that isn't on the board.");
-		} else if (row < 0 || row >= model.boardSize ||
-		           column < 0 || column >= model.boardSize) {
+		} else if (row < 0 || row >= GameBoard.boardSize ||
+		           column < 0 || column >= GameBoard.boardSize) {
 			alert("Oops, that's off the board!");
 		} else {
 			return row + column;
@@ -114,43 +115,46 @@ var GameBoard = {
 	}
 	return null;
 },
-	guesses: 0,
+    controller: {
+        guesses: 0,
+        
 	processGuess: function(guess) {
 		var location = parseGuess(guess);
 		if (location) {
 			this.guesses++;
-			var hit = model.fire(location);
-			if (hit && model.shipsSunk === model.numShips) {
-					view.displayMessage("You sank all my battleships, in " + this.guesses + " guesses");
+			var hit = Ships.fire(location);
+			if (hit && Ships.shipsSunk === Ships.numShips) {
+					GameBoard.view.displayMessage("You sank all my battleships, in " + this.guesses + " guesses");
 			}
-		}
+                    }
+            }
+        },
+        
+    view: {
+                displayMessage: function(msg) {
+                    var messageArea = document.getElementById("messageArea");
+                        messageArea.innerHTML = msg;
+	},
+
+                displayHit: function(location) {
+                    var cell = document.getElementById(location);
+                        cell.setAttribute("class", "hit");
+	},
+
+                displayMiss: function(location) {
+                    var cell = document.getElementById(location);
+                        cell.setAttribute("class", "miss");
 	}
-};
-
-var Game = {
+        
+   },
+   
     
-	displayMessage: function(msg) {
-		var messageArea = document.getElementById("messageArea");
-		messageArea.innerHTML = msg;
-	},
-
-	displayHit: function(location) {
-		var cell = document.getElementById(location);
-		cell.setAttribute("class", "hit");
-	},
-
-	displayMiss: function(location) {
-		var cell = document.getElementById(location);
-		cell.setAttribute("class", "miss");
-	},
-
- 
 
     handleFireButton: function() {
 	var guessInput = document.getElementById("guessInput");
 	var guess = guessInput.value.toUpperCase();
 
-	controller.processGuess(guess);
+	GameBoard.processGuess(guess);
 	guessInput.value = "";
         },
     
@@ -173,11 +177,11 @@ window.onload = init;
 function init() {
 	// Fire! button onclick handler
 	var fireButton = document.getElementById("fireButton");
-	fireButton.onclick = Game.handleFireButton;
+	fireButton.onclick = GameBoard.handleFireButton;
 
 	// handle "return" key press
 	var guessInput = document.getElementById("guessInput");
-	guessInput.onkeypress = Game.handleKeyPress;
+	guessInput.onkeypress = GameBoard.handleKeyPress;
 
 	// place the ships on the game board
 	Ships.generateShipLocations();
