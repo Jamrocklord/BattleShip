@@ -1,5 +1,4 @@
 
-
 var Ships = {
 	numShips: "3",
 	shipLength: "3",
@@ -9,7 +8,7 @@ var Ships = {
 		{ locations: [0, 0, 0], hits: ["", "", ""] },
 		{ locations: [0, 0, 0], hits: ["", "", ""] },
 		{ locations: [0, 0, 0], hits: ["", "", ""] }
-	],
+	],//Need to change the lengths of ships 
 
 	fire: function(guess) {
 		for (var i = 0; i < this.numShips; i++) {
@@ -18,18 +17,18 @@ var Ships = {
 
 			if (index >= 0) {
 				ship.hits[index] = "hit";
-				GameBoard.view.displayHit(guess);
-				GameBoard.view.displayMessage("HIT!");
+				Game.view.displayHit(guess);
+				Game.view.displayMessage("HIT!");
 
 				if (this.isSunk(ship)) {
-                                            GameBoard.view.displayMessage("You sank my battleship!");
+                                            Game.view.displayMessage("You sank my battleship!");
 					this.shipsSunk++;
 				}
 				return true;
 			}
 		}
-		GameBoard.view.displayMiss(guess);
-                GameBoard.view.displayMessage("You missed.");
+		Game.view.displayMiss(guess);
+                Game.view.displayMessage("You missed.");
 		return false;
 	},
 
@@ -92,7 +91,7 @@ var Ships = {
 }; 
 
 
-var GameBoard = {
+var Game = {
     
    
     boardController:function parseGuess(guess) {
@@ -106,8 +105,8 @@ var GameBoard = {
 		
 		if (isNaN(row) || isNaN(column)) {
 			alert("Oops, that isn't on the board.");
-		} else if (row < 0 || row >= GameBoard.boardSize ||
-		           column < 0 || column >= GameBoard.boardSize) {
+		} else if (row < 0 || row >= Ships.boardSize ||
+		           column < 0 || column >= Ships.boardSize) {
 			alert("Oops, that's off the board!");
 		} else {
 			return row + column;
@@ -115,8 +114,8 @@ var GameBoard = {
 	}
 	return null;
 },
-    controller: {
-        guesses: 0,
+
+        guesses: "0",
         
 	processGuess: function(guess) {
 		var location = parseGuess(guess);
@@ -124,11 +123,11 @@ var GameBoard = {
 			this.guesses++;
 			var hit = Ships.fire(location);
 			if (hit && Ships.shipsSunk === Ships.numShips) {
-					GameBoard.view.displayMessage("You sank all my battleships, in " + this.guesses + " guesses");
+					Game.view.displayMessage("You sank all my battleships, in " + this.guesses + " guesses");
 			}
-                    }
-            }
-        },
+        }
+},
+        
         
     view: {
                 displayMessage: function(msg) {
@@ -154,11 +153,10 @@ var GameBoard = {
 	var guessInput = document.getElementById("guessInput");
 	var guess = guessInput.value.toUpperCase();
 
-	GameBoard.processGuess(guess);
+	Game.processGuess(guess);
 	guessInput.value = "";
         },
     
-
     handleKeyPress: function(e) {
 	var fireButton = document.getElementById("fireButton");
 
@@ -168,22 +166,24 @@ var GameBoard = {
 
 	if (e.keyCode === 13) {
 		fireButton.click();
-		return false;
-	}
-}
+		return false // testing with true.
+        }
+    }
 };
 window.onload = init;
 
 function init() {
 	// Fire! button onclick handler
 	var fireButton = document.getElementById("fireButton");
-	fireButton.onclick = GameBoard.handleFireButton;
+	fireButton.onclick = Game.handleFireButton;
 
 	// handle "return" key press
 	var guessInput = document.getElementById("guessInput");
-	guessInput.onkeypress = GameBoard.handleKeyPress;
+	guessInput.onkeypress = Game.handleKeyPress;
 
 	// place the ships on the game board
 	Ships.generateShipLocations();
 };
 
+// for the flee function. possible use random math to calculate the spaces in which to move by after being hit. 
+// conflicts with flee and collsion functions. after a collsion is show by the ship the can or cannot move over the same spot the collsion happened.
