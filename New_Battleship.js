@@ -5,7 +5,7 @@
  */
 //Ship object (Prototype)
 
-function Ship(shipLength, numhits, location, orientation){
+function Ship(){
     this.shipLength= [2,3,4],
     this.numhits= 0,
     this.location= [
@@ -21,10 +21,10 @@ var ShipTwo= new Ship();
 var ShipThree= new Ship();
 
 function GameBoard(boardSize){
-    this.boardSize= "7"
+    this.boardSize= "7";
 };
 
-function Game(fire, isSunk, generateShipLocations, generateShip, collision){
+function Game(){
     
     this.fire= function(guess) {
 		for (var i = 0; i < this.numShips; i++) {
@@ -56,7 +56,7 @@ function Game(fire, isSunk, generateShipLocations, generateShip, collision){
 		}
 	    return true;
 	},
-                
+                //Loads the ship locations into the "objects" in 'ships'      
     this.generateShipLocations= function() {
 		var locations;
 		for (var i = 0; i < this.numShips; i++) {
@@ -69,6 +69,8 @@ function Game(fire, isSunk, generateShipLocations, generateShip, collision){
 		console.log(this.ships);
 	},
     this.generateShip= function() {
+                // Choose whether the ship is vertical or horizontal
+               // Also an example of using Math.random
 		var direction = Math.floor(Math.random() * 2);
 		var row, col;
 
