@@ -114,7 +114,7 @@ var Game = {
 	}
 	return null;
 },
-
+//move out 
         guesses: "0",
         
 	processGuess: function(guess) {
@@ -128,7 +128,7 @@ var Game = {
         }
 },
         
-        
+ //Move out       
     view: {
                 displayMessage: function(msg) {
                     var messageArea = document.getElementById("messageArea");
@@ -148,7 +148,7 @@ var Game = {
    },
    
     
-
+//Move out
     handleFireButton: function() {
 	var guessInput = document.getElementById("guessInput");
 	var guess = guessInput.value.toUpperCase();
@@ -170,6 +170,7 @@ var Game = {
         }
     }
 };
+
 window.onload = init;
 
 function init() {
