@@ -5,27 +5,106 @@
  */
 //Ship object (Prototype)
 
-function Ship(){
-    this.shipLength= [2,3,4],
+function Ship(numhits, location){
+
     this.numhits= 0,
     this.location= [
                 { locations: [0, 0, 0], hits: ["", "", ""] }
     ],
-    this.orientation= function locate(boardSize){
-        
-    }// take in gameboard size and sets location after being generated
-    
-};
+    this.hit= function(){
+        for(var i= 0; i < this.nuumhit.length; i++) {
+               if(this.numhits[i] !== 0){
+                   numhits++;
+               }
+        };
+    };
+    console.log(this.numhit);// testing hit 
+};//end of ship object
+
+//making instances of ship object
 var ShipOne= new Ship();
 var ShipTwo= new Ship();
 var ShipThree= new Ship();
 
-function GameBoard(boardSize){
-    this.boardSize= 7;
+function Game(){
+        this.Board= new GameBoard();
+        this.guesses= 0,
+            
+	this.displayMessage= function(msg) {
+		var messageArea = document.getElementById("messageArea");
+		messageArea.innerHTML = msg;
+	},
+
+	this.displayHit= function(location) {
+		var cell = document.getElementById(location);
+		cell.setAttribute("class", "hit");
+	},
+
+	this.displayMiss= function(location) {
+		var cell = document.getElementById(location);
+		cell.setAttribute("class", "miss");
+	};
+ 
+        this.handleFireButton= function() {
+                var guessInput = document.getElementById("guessInput");
+                var guess = guessInput.value.toUpperCase();
+
+                    Game.processGuess(guess);
+
+	guessInput.value = "";
 };
 
-function Game(){
+        this.handleKeyPress= function(e) {
+                var fireButton = document.getElementById("fireButton");
+
+                // in IE9 and earlier, the event object doesn't get passed
+                // to the event handler correctly, so we use window.event instead.
+                    e = e || window.event;
+
+                if (e.keyCode === 13) {
+                    fireButton.click();
+                        return false;
+            }
+        };
+         this.parseGuess= function(guess) {
+                var alphabet = ["A", "B", "C", "D", "E", "F", "G","H"];
+
+                if (guess === null || guess.length !== 2) {
+		alert("Oops, please enter a letter and a number on the board.");
+	} else {
+		var firstChar = guess.charAt(0);
+		var row = alphabet.indexOf(firstChar);
+		var column = guess.charAt(1);
+		
+		if (isNaN(row) || isNaN(column)) {
+			alert("Oops, that isn't on the board.");
+		} else if (row < 0 || row >= Game.boardSize ||
+		           column < 0 || column >= Game.boardSize) {
+			alert("Oops, that's off the board!");
+		} else {
+			return row + column;
+		}
+	}
+	return null;
+};
+	this.processGuess= function(guess) {
+		var location = parseGuess(guess);
+		if (location) {
+			this.guesses++;
+			var hit = Game.fire(location);
+			if (hit && Game.shipsSunk === Game.numShips) {
+					Game.displayMessage("You sank all my battleships, in " + this.guesses + " guesses");
+			}
+		}
+	};
+};//end of game functon
+
+function GameBoard(){
     
+    this.shipLength= [2,3,3,4],
+    this.numships= 4;
+    this.shipsSunk= 0;
+    this.boardSize= 8;
     this.fire= function(guess) {
 		for (var i = 0; i < this.numShips; i++) {
 			var ship = this.ships[i];
@@ -33,18 +112,18 @@ function Game(){
 
 			if (index >= 0) {
 				ship.hits[index] = "hit";
-				view.displayHit(guess);
-				view.displayMessage("HIT!");
+				Game.displayHit(guess);
+				Game.displayMessage("HIT!");
 
 				if (this.isSunk(ship)) {
-					view.displayMessage("You sank my battleship!");
+					Game.displayMessage("You sank my battleship!");
 					this.shipsSunk++;
 				}
 				return true;
 			}
 		}
-		view.displayMiss(guess);
-		view.displayMessage("You missed.");
+		Game.displayMiss(guess);
+		Game.displayMessage("You missed.");
 		return false;
 	},
          
@@ -99,73 +178,10 @@ function Game(){
 			}
 		}
 		return false;
-	}                        
+	};                       
                 
-};
+};//end of GameBaord function
 
-function parseGuess(guess) {
-	var alphabet = ["A", "B", "C", "D", "E", "F", "G","H"];
-
-	if (guess === null || guess.length !== 2) {
-		alert("Oops, please enter a letter and a number on the board.");
-	} else {
-		var firstChar = guess.charAt(0);
-		var row = alphabet.indexOf(firstChar);
-		var column = guess.charAt(1);
-		
-		if (isNaN(row) || isNaN(column)) {
-			alert("Oops, that isn't on the board.");
-		} else if (row < 0 || row >= model.boardSize ||
-		           column < 0 || column >= model.boardSize) {
-			alert("Oops, that's off the board!");
-		} else {
-			return row + column;
-		}
-	}
-	return null;
-}
-
-
-
-function view ( displayMessage, displayHit, displayHit, displayMiss) {
-	this.displayMessage= function(msg) {
-		var messageArea = document.getElementById("messageArea");
-		messageArea.innerHTML = msg;
-	},
-
-	this.displayHit= function(location) {
-		var cell = document.getElementById(location);
-		cell.setAttribute("class", "hit");
-	},
-
-	this.displayMiss= function(location) {
-		var cell = document.getElementById(location);
-		cell.setAttribute("class", "miss");
-	};
-
-}; 
-
-function handleFireButton() {
-	var guessInput = document.getElementById("guessInput");
-	var guess = guessInput.value.toUpperCase();
-
-	controller.processGuess(guess);
-
-	guessInput.value = "";
-}
-
-function handleKeyPress(e) {
-	var fireButton = document.getElementById("fireButton");
-
-	// in IE9 and earlier, the event object doesn't get passed
-	// to the event handler correctly, so we use window.event instead.
-	e = e || window.event;
-
-	if (e.keyCode === 13) {
-		fireButton.click();
-		return false;
-	}
-}
 
 
 window.onload = init;
@@ -180,6 +196,6 @@ function init() {
 	guessInput.onkeypress = handleKeyPress;
 
 	// place the ships on the game board
-	model.generateShipLocations();
+	Game.generateShipLocations();
 }
 
